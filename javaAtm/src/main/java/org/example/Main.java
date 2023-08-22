@@ -1,258 +1,488 @@
 package org.example;
-
 import javax.swing.*;
-import java.util.Scanner;
-
 public class Main {
-/*
+
+    static boolean backToHome;
+    static float totalBalance = 0;
+
     public static void main(String[] args) {
-        // this is the total balance of all account combined
-        float totalBalance = 0;
+        //creating a new object of the all the classes
 
-        // an object for SavingAccount class
         SavingAccount savingAccount = SavingAccount.createSavingAccount();
+        NetSavingAccount netSavingAccount = NetSavingAccount.createNetsavingAccount();
 
-        // an object for NetSaving class
-        NetsavingAccount netsavingAccount = new NetsavingAccount();
+        ChequeAccount chequeAccount = ChequeAccount.createChequeAccount();
+        FixedAccount fixedAccount = FixedAccount.createFixedAccount();
+        // setting an empty password ;
+        String password ="";
 
-        // an object for ChequeAccount
-        ChequeAccount chequeAccount = new ChequeAccount();
-
-        // an object for FixedAccount
-        FixedAccount fixedAccount = new FixedAccount();
-
-        // object for Scanner class to take an input
-        Scanner scanner = new Scanner(System.in);
-
-        // A GUI based Panel to ask user about their name and account number
+        //setting the account number and name
         savingAccount.accountNumber = Integer.parseInt(JOptionPane.showInputDialog(null, "What is your Account Number? "));
         savingAccount.accountName = (JOptionPane.showInputDialog(null, "What is your Name? "));
 
-        // back to console based, this prints the name and accout number which was given by user
+        // settting the password for the account
+        while(true){
+            password = (JOptionPane.showInputDialog(null, "Password? "));
+            if(password.equals("1234")){
+                break;
+            }
+            else{
+                JOptionPane.showMessageDialog(null, "Wrong Password");
+            }
+        }
+
+// this will print welcome in the console
         System.out.println("Welcome, " + savingAccount.accountName + "!");
         System.out.println("@" + savingAccount.accountNumber);
 
+        AtmGui atmGui = new AtmGui();
+        atmGui.createGUI();
+        atmGui.accInfo.setText("Welcome, " + savingAccount.accountName + ": @ " + savingAccount.accountNumber);
 
-        // using an infinity loop so that it keeps on asking user for input an input and keeps generating output based on that
+        //infinity loop, it doesn't end until the program is terminated or exit button is pressed
         while (true) {
-            // Main part of our ATM
-            System.out.println("Choose Which account do you want to open: ");
-            System.out.println("Total Balance: " + totalBalance);
-            System.out.println("1. Saving account ");
-            System.out.println("2. Netsavers account ");
-            System.out.println("3. Cheque account ");
-            System.out.println("4. Fixed account ");
-            System.out.println("5. Exit ");
-            System.out.println("------------------------------------------------");
+            backToHome = false;
 
+            while (!backToHome) {
+                atmGui.newOptionTextField.setVisible(false);
+                atmGui.amountTextField.setVisible(false);
+                atmGui.optionTextField.setVisible(true);
+                atmGui.option = 0;
+                atmGui.newOption = 0;
+                atmGui.enteredAmount = 0;
+                atmGui.enterButton.setEnabled(true);
+                atmGui.button1.setEnabled(false);
+                atmGui.button2.setEnabled(false);
 
-            // ask user to input for the option above
-            int option = scanner.nextInt();
-// using switch case as we have different case, it is a better alternative for if else for our code.
-            switch (option) {
-// case 1,  it shows the saving account details and ask user to interact with it
-                case (1):
+                // this is the main screen of the application
+                atmGui.textBox.setText(
+                        "Choose Which account do you want to open: \n"
+                                + "Total Balance: " + totalBalance + "\n"
+                                + "1. Saving account\n"
+                                + "2. NetSavers account\n"
+                                + "3. Cheque account\n"
+                                + "4. Fixed account\n"
+                );
 
-                    // display screen
-                    System.out.println("Saving Account");
-                    System.out.println("Saving Account Balance: " + (savingAccount.bankBalance + savingAccount.interest()));
-                    System.out.println("Interest Rate: " + savingAccount.interestRate + "%");
-                    System.out.println("Interest earned: " + savingAccount.interest());
-                    System.out.println("Choose: ");
-                    System.out.println("1. Deposit");
-                    System.out.println("2. Withdraw");
-                    System.out.println("3. Set/ Change your Withdraw Limit");
-                    System.out.println("4. Show Balance");
+                // Switch case for the application
 
-                    int newOption = scanner.nextInt();
-                    if (newOption == 1) {
-                        System.out.println("Enter the amount you want to Deposit: ");
-                        savingAccount.deposit = scanner.nextInt();
-                        savingAccount.deposit();
-                        System.out.println("------------------------------------------------");
-
-                    } else if (newOption == 2) {
-                        System.out.println("Enter the amount you want to Withdraw: ");
-                        System.out.println("Current withdrawal Limit: " + savingAccount.withdrawalLimit);
-                        savingAccount.withdraw = scanner.nextInt();
-                        savingAccount.withdraw();
-                        System.out.println("------------------------------------------------");
-
-                    } else if (newOption == 3) {
-                        System.out.println("Current limit: " + savingAccount.withdrawalLimit);
-                        System.out.println("Choose: \n 1. Change Limit \n 2. Cancel");
-                        int optionChangeLimit = scanner.nextInt();
-                        if (optionChangeLimit == 1) {
-                            savingAccount.withdrawalLimit = scanner.nextInt();
-                            System.out.println("Limit Change Successfully! ");
-                            System.out.println("New limit: " + savingAccount.withdrawalLimit);
-                        } else if (optionChangeLimit == 2) {
-                            System.out.println("Operation Cancelled!");
-
-                        } else {
-                            System.out.println("Wrong Input");
-                        }
-                        System.out.println("------------------------------------------------");
-
-                    } else if (newOption == 4) {
-                        System.out.println("Saving Account");
-                        System.out.println("Saving Account Balance: " + (savingAccount.bankBalance + savingAccount.interest()));
-                        System.out.println("Interest Rate: " + savingAccount.interestRate + "%");
-                        System.out.println("Interest earned: " + savingAccount.interest());
-                        System.out.println("Interest calculated Daily");
-                        System.out.println("------------------------------------------------");
-
-                    } else {
-                        System.out.println("Wrong Input");
-                        System.out.println("------------------------------------------------");
-                    }
-                    break;
-
-// case 2,  it shows the NetSaving account details and ask user to interact with it
-
-                case (2):
-                    // display screen
-                    System.out.println("NetSaving Account");
-                    System.out.println("NetSaving Account Balance: " + (netsavingAccount.bankBalance + netsavingAccount.interest()));
-                    System.out.println("Interest Rate: " + netsavingAccount.interestRate + "%");
-                    System.out.println("Interest earned: " + netsavingAccount.interest());
-                    System.out.println("Choose: ");
-                    System.out.println("1. Deposit");
-                    System.out.println("2. Withdraw");
-                    System.out.println("3. Show Balance");
-
-
-                    int newOptionNetSaving = scanner.nextInt();
-                    if (newOptionNetSaving == 1) {
-                        System.out.println("Enter the amount you want to Deposit: ");
-                        netsavingAccount.deposit = scanner.nextInt();
-                        netsavingAccount.deposit();
-                        System.out.println("------------------------------------------------");
-
-                    } else if (newOptionNetSaving == 2) {
-                        System.out.println("Enter the amount you want to Withdraw: ");
-                        System.out.println("Current withdrawal Limit: " + netsavingAccount.withdrawalLimit);
-                        netsavingAccount.withdraw = scanner.nextInt();
-                        netsavingAccount.withdraw();
-                        System.out.println("------------------------------------------------");
-
-                    } else if (newOptionNetSaving == 3) {
-                        System.out.println("NetSaving Account");
-                        System.out.println("NetSaving Account Balance: " + (netsavingAccount.bankBalance + netsavingAccount.interest()));
-                        System.out.println("Interest Rate: " + netsavingAccount.interestRate + "%");
-                        System.out.println("Interest earned: " + netsavingAccount.interest());
-                        System.out.println("Interest calculated monthly");
-                        System.out.println("------------------------------------------------");
-
-                    } else {
-                        System.out.println("Wrong Input");
-                        System.out.println("------------------------------------------------");
-                    }
-                    break;
-
-
-// case 3,  it shows the Cheque account details and ask user to interact with it
-
-                case (3):
-                    // display screen
-                    System.out.println("Cheque Account");
-                    System.out.println("Cheque Account Balance: " + (chequeAccount.bankBalance));
-                    System.out.println("Choose: ");
-                    System.out.println("1. Deposit");
-                    System.out.println("2. Withdraw");
-                    System.out.println("3. Show Balance");
-
-                    int newOptionChequeSaving = scanner.nextInt();
-                    if (newOptionChequeSaving == 1) {
-                        System.out.println("Enter the amount you want to Deposit: ");
-                        chequeAccount.deposit = scanner.nextInt();
-                        chequeAccount.deposit();
-                        System.out.println("------------------------------------------------");
-
-                    } else if (newOptionChequeSaving == 2) {
-                        System.out.println("Enter the amount you want to Withdraw: ");
-                        System.out.println("No withdraw limit! ");
-                        chequeAccount.withdraw = scanner.nextInt();
-                        chequeAccount.withdraw();
-                        System.out.println("------------------------------------------------");
-
-                    } else if (newOptionChequeSaving == 3) {
-                        System.out.println("NetSaving Account");
-                        System.out.println("NetSaving Account Balance: " + (chequeAccount.bankBalance));
-                        System.out.println("NO interest");
-                        System.out.println("------------------------------------------------");
-
-                    } else {
-                        System.out.println("Wrong Input");
-                        System.out.println("------------------------------------------------");
-                    }
-                    break;
-// case 4,  it shows the Cheque account details and ask user to interact with it
-
-                case (4):
-                    // display screen
-                    System.out.println("Fixed Account");
-                    System.out.println("Fixed Account Balance: " + (fixedAccount.bankBalance + fixedAccount.interest()));
-                    System.out.println("Interest Rate: " + fixedAccount.interestRate + "%");
-                    System.out.println("Potential Interest: " + fixedAccount.potentialInterest());
-                    System.out.println("Choose: ");
-                    System.out.println("1. Deposit");
-                    System.out.println("2. Withdraw");
-                    System.out.println("3. Show Balance");
-
-                    int newOptionFixedSaving = scanner.nextInt();
-                    if (newOptionFixedSaving == 1) {
-                        System.out.println("Enter the amount you want to Deposit: ");
-                        fixedAccount.deposit = scanner.nextInt();
-                        fixedAccount.deposit();
-                        System.out.println("------------------------------------------------");
-
-                    } else if (newOptionFixedSaving == 2) {
-                        System.out.println("Enter the amount you want to Withdraw: ");
-                        System.out.println("Current withdrawal Limit: Unlimited ");
-                        fixedAccount.withdraw = scanner.nextInt();
-                        fixedAccount.withdraw();
-                        System.out.println("------------------------------------------------");
-
-                    } else if (newOptionFixedSaving == 3) {
-                        System.out.println("Fixed Account");
-                        System.out.println("Fixed Account Balance: " + (fixedAccount.bankBalance + fixedAccount.interest()));
-                        System.out.println("Interest Rate: " + fixedAccount.interestRate + "%");
-                        System.out.println("Interest earned: " + fixedAccount.interest());
-                        System.out.println("Potential Interest: " + fixedAccount.potentialInterest());
-                        System.out.println("Interest calculated on fixed contract, Currently on 1 year plan");
-                        System.out.println("------------------------------------------------");
-
-                    } else {
-                        System.out.println("Wrong Input");
-                        System.out.println("------------------------------------------------");
-                    }
-                    break;
-
-                case (5):
-                    System.out.println("------------------------------------------------");
-                    System.out.println("ThankYou! for using AIT Bank \uD83D\uDE00\n");
-                    System.exit(0);
-
-// A default output that will be shown if anything unexpected is done
-                default:
-                    System.out.println("Invalid Input, Try again");
-
-
+                switch (atmGui.option) {
+                    case 1:
+                        handleSavingAccount(savingAccount, atmGui);
+                        break;
+                    case 2:
+                        handleNetSavingAccount(netSavingAccount, atmGui);
+                        break;
+                    case 3:
+                        handleChequeAccount(chequeAccount, atmGui);
+                        break;
+                    case 4:
+                        handleFixedAccount(fixedAccount, atmGui);
+                        break;
+                }
+                // this will set the total balance of all the accounts everytime the while loops reaches here, and after this as we have a infinity loop, it will go on like this
+                totalBalance = netSavingAccount.bankBalance + savingAccount.bankBalance + chequeAccount.bankBalance + fixedAccount.bankBalance;
+                break;
             }
-            // this line updates totalBalance everytime a switch case is completed and before it goes back to the top using while loop
-            totalBalance = netsavingAccount.bankBalance + savingAccount.bankBalance + chequeAccount.bankBalance + fixedAccount.bankBalance;
+        }
+    }
 
+    private static void handleSavingAccount(SavingAccount savingAccount, AtmGui atmGui) {
+        // ... (code for handling SavingAccount)
+        // display screen
+        atmGui.textBox.setText(
+                "Saving Account\n"
+                        + "Saving Account Balance: " + (savingAccount.bankBalance + savingAccount.interest()) + "\n"
+                        + "Interest Rate: " + savingAccount.interestRate + "%\n"
+                        + "Interest earned: " + savingAccount.interest() + "\n"
+                        + "Choose:\n"
+                        + "1. Deposit\n"
+                        + "2. Withdraw\n"
+                        + "3. Set/Change your Withdraw Limit\n"
+                        + "4. Show Balance\n"
+        );
+        atmGui.optionTextField.setVisible(false);
+        atmGui.amountTextField.setVisible(false);
+        atmGui.newOptionTextField.setVisible(true);
+        atmGui.button1.setEnabled(false);
+        atmGui.button2.setEnabled(false);
+        while (atmGui.newOption == 0) {
+            Timer timer = new Timer(1, null);
+            timer.setRepeats(false); // Stop after one execution
+
+            timer.start();
+            
+        }
+
+        // if user choose option 1, it will ask user to enter the amount they want to deposit
+        if (atmGui.newOption == 1) {
+            atmGui.button2.setEnabled(true);
+            atmGui.textBox.setText("Enter the amount you want to Deposit:\n");
+            atmGui.enterButton.setEnabled(false);
+            atmGui.button2.setEnabled(true);
+
+            // Making the new text field visible and the old one invisible
+            atmGui.newOptionTextField.setVisible(false);
+            atmGui.amountTextField.setVisible(true);
+
+
+            while (atmGui.enteredAmount == 0) {
+                Timer timer = new Timer(1, null);
+                timer.setRepeats(false); // Stop after one execution
+
+                timer.start();
+                while (timer.isRunning()) {
+                    // Keep the loop running while the timer is running
+                }
+            }
+            savingAccount.deposit = atmGui.enteredAmount;
+            atmGui.enteredAmount = 0;
+            savingAccount.deposit();
+            // if user choose option 2, it will ask user to enter the amount they want to withdraw
+
+        } else if (atmGui.newOption == 2) {
+            atmGui.enterButton.setEnabled(false);
+            atmGui.button1.setEnabled(true);
+            atmGui.textBox.setText("Current withdrawal Limit: " + savingAccount.withdrawalLimit);
+            atmGui.textBox.append("\nEnter the amount you want to Withdraw:\n");
+            atmGui.optionTextField.setVisible(false);
+            atmGui.button1.setEnabled(true);
+            atmGui.newOptionTextField.setVisible(false);
+            atmGui.amountTextField.setVisible(true);
+            while (atmGui.enteredAmount == 0) {
+                Timer timer = new Timer(1, null);
+                timer.setRepeats(false); // Stop after one execution
+
+                timer.start();
+                while (timer.isRunning()) {
+
+                    if (atmGui.enteredAmount > 0) {
+                        savingAccount.withdraw = atmGui.enteredAmount;
+                        savingAccount.withdraw();
+                        break;
+
+                    }
+                }
+            }
+
+        }else if (atmGui.newOption == 3) {
+            atmGui.textBox.setText("Current limit: " + savingAccount.withdrawalLimit
+                    + "\nChoose:\n 1. Change Limit\n 2. Cancel");
+            atmGui.enterButton.setEnabled(true);
+
+            // Making the new text field visible and the old one invisible
+            atmGui.newOptionTextField.setVisible(false);
+            atmGui.amountTextField.setVisible(true);
+
+            Timer timer = new Timer(1, null);
+            timer.setRepeats(false); // Stop after one execution
+
+            timer.addActionListener(e -> {
+                String newLimit = JOptionPane.showInputDialog(null, "Enter new limit: ");
+                if (newLimit != null) {
+                    savingAccount.withdrawalLimit = Integer.parseInt(newLimit);
+                    JOptionPane.showMessageDialog(null, "Limit Change Successfully!");
+                } else {
+                    JOptionPane.showMessageDialog(null, "Limit Change Cancelled!");
+                }
+                atmGui.enteredAmount = 0;
+            });
+
+            timer.start();
+        }
+        else if (atmGui.newOption == 4) {
+
+            atmGui.textBox.setText("Saving Account\n"
+                    + "Saving Account Balance: " + (savingAccount.bankBalance + savingAccount.interest())
+                    + "\nInterest Rate: " + savingAccount.interestRate + "%"
+                    + "\nInterest earned: " + savingAccount.interest()
+                    + "\nInterest calculated Daily"+
+                    "\n" + "\n" +
+                    "\n In 3sec <------ Back to main screen >");
+
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            
 
         }
 
     }
-*/
+
+    private static void handleNetSavingAccount(NetSavingAccount netsavingAccount, AtmGui atmGui) {
+        /// display screen
+        atmGui.textBox.setText(
+                "NetSaving Account\n"
+                        + "NetSaving Account Balance: " + (netsavingAccount.bankBalance + netsavingAccount.interest()) + "\n"
+                        + "Interest Rate: " + netsavingAccount.interestRate + "%\n"
+                        + "Interest earned: " + netsavingAccount.interest() + "\n"
+                        + "Choose:\n"
+                        + "1. Deposit\n"
+                        + "2. Withdraw\n"
+                        + "3. Show Balance\n"
+        );
+
+        atmGui.optionTextField.setVisible(false);
+        atmGui.amountTextField.setVisible(false);
+        atmGui.newOptionTextField.setVisible(true);
+
+        while (atmGui.newOption == 0) {
+            Timer timer = new Timer(1, null);
+            timer.setRepeats(false); // Stop after one execution
+            timer.start();
+            
+        }
 
 
-    public static void main(String[] args) {
-        AtmGui atmGui = new AtmGui();
-        atmGui.createGUI();
+        if (atmGui.newOption == 1) {
+            atmGui.button2.setEnabled(true);
+            atmGui.textBox.setText("Enter the amount you want to Deposit:\n");
+            atmGui.enterButton.setEnabled(false);
 
+            // Making the new text field visible and the old one invisible
+            atmGui.newOptionTextField.setVisible(false);
+            atmGui.amountTextField.setVisible(true);
+
+
+            while (atmGui.enteredAmount == 0) {
+                Timer timer = new Timer(1, null);
+                timer.setRepeats(false); // Stop after one execution
+
+                timer.start();
+                while (timer.isRunning()) {
+                    // Keep the loop running while the timer is running
+                }
+            }
+
+            netsavingAccount.deposit = atmGui.enteredAmount;
+            atmGui.enteredAmount = 0;
+            netsavingAccount.deposit();
+
+        } else if (atmGui.newOption == 2) {
+            atmGui.button1.setEnabled(true);
+            atmGui.textBox.setText("Enter the amount you want to Withdraw:\n");
+
+            // Making the new text field visible and the old one invisible
+            atmGui.optionTextField.setVisible(false);
+            atmGui.newOptionTextField.setVisible(false);
+            atmGui.amountTextField.setVisible(true);
+
+            atmGui.textBox.setText(atmGui.textBox.getText() + "Current withdrawal Limit: " + netsavingAccount.withdrawalLimit);
+
+            atmGui.enteredAmount = 0;
+            while (atmGui.enteredAmount == 0) {
+                Timer timer = new Timer(1, null);
+                timer.setRepeats(false); // Stop after one execution
+
+                timer.start();
+                while (timer.isRunning()) {
+                    // Keep the loop running while the timer is running
+                    if (atmGui.enteredAmount > 0) {
+                        netsavingAccount.withdraw = atmGui.enteredAmount;
+                        netsavingAccount.withdraw();
+                    }
+                }
+            }
+
+
+        } else if (atmGui.newOption == 3) {
+            atmGui.textBox.setText("NetSaving Account\n"
+                    + "NetSaving Account Balance: " + (netsavingAccount.bankBalance + netsavingAccount.interest())
+                    + "\nInterest Rate: " + netsavingAccount.interestRate + "%"
+                    + "\nInterest earned: " + netsavingAccount.interest()
+                    + "\nInterest calculated -> monthly" +
+                    "\n" + "\n" +
+                    "\n In 3sec <------ Back to main screen ");
+
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            
+        }
+    }
+
+    private static void handleChequeAccount(ChequeAccount chequeAccount, AtmGui atmGui) {
+        // ... (code for handling ChequeAccount)
+        // display screen
+        atmGui.textBox.setText(
+                "Cheque Account\n"
+                        + "Cheque Account Balance: " + chequeAccount.bankBalance + "\n"
+                        + "Choose:\n"
+                        + "1. Deposit\n"
+                        + "2. Withdraw\n"
+                        + "3. Show Balance\n"
+        );
+
+        atmGui.optionTextField.setVisible(false);
+        atmGui.amountTextField.setVisible(false);
+        atmGui.newOptionTextField.setVisible(true);
+
+        while (atmGui.newOption == 0) {
+            Timer timer = new Timer(1, null);
+            timer.setRepeats(false); // Stop after one execution
+
+            timer.start();
+            
+        }
+
+        if (atmGui.newOption == 1) {
+            atmGui.button2.setEnabled(true);
+            atmGui.textBox.setText("Enter the amount you want to Deposit:\n"
+                    + " Current Deposit Limit: Unlimited");
+            atmGui.enterButton.setEnabled(false);
+
+            // Making the new text field visible and the old one invisible
+            atmGui.newOptionTextField.setVisible(false);
+            atmGui.amountTextField.setVisible(true);
+
+
+            while (atmGui.enteredAmount == 0) {
+                Timer timer = new Timer(1, null);
+                timer.setRepeats(false); // Stop after one execution
+
+                timer.start();
+                while (timer.isRunning()) {
+                    // Keep the loop running while the timer is running
+                }
+            }
+            chequeAccount.deposit = atmGui.enteredAmount;
+            atmGui.enteredAmount = 0;
+            chequeAccount.deposit();
+
+        } else if (atmGui.newOption == 2) {
+            atmGui.button1.setEnabled(true);
+            atmGui.textBox.setText("Enter the amount you want to Withdraw:\n");
+            atmGui.optionTextField.setVisible(false);
+            atmGui.newOptionTextField.setVisible(false);
+            atmGui.amountTextField.setVisible(true);
+            while (atmGui.enteredAmount == 0) {
+                Timer timer = new Timer(1, null);
+                timer.setRepeats(false); // Stop after one execution
+
+                timer.start();
+                while (timer.isRunning()) {
+                    // Keep the loop running while the timer is running
+                    if (atmGui.enteredAmount > 0) {
+                        chequeAccount.withdraw = atmGui.enteredAmount;
+                        chequeAccount.withdraw();
+                        break;
+                    }
+                }
+
+
+            }
+
+
+        } else if (atmGui.newOption == 3) {
+            atmGui.textBox.setText("Cheque Account\n"
+                    + "Cheque Account Balance: " + (chequeAccount.bankBalance)
+                    + "\nNo interest" +
+                    "\n" + "\n" + "\n" + "\n" +
+                    "\n In 3sec <------ Back to main screen >");
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
+        }
+    }
+
+    private static void handleFixedAccount(FixedAccount fixedAccount, AtmGui atmGui) {
+        // ... (code for handling FixedAccount)
+        // display screen
+        atmGui.textBox.setText(
+                "Fixed Account\n"
+                        + "Fixed Account Balance: " + (fixedAccount.bankBalance + fixedAccount.interest()) + "\n"
+                        + "Interest Rate: " + fixedAccount.interestRate + "%\n"
+                        + "Potential Interest: " + fixedAccount.potentialInterest() + "\n"
+                        + "Choose:\n"
+                        + "1. Deposit\n"
+                        + "2. Withdraw\n"
+                        + "3. Show Balance\n"
+        );
+
+        atmGui.optionTextField.setVisible(false);
+        atmGui.amountTextField.setVisible(false);
+        atmGui.newOptionTextField.setVisible(true);
+
+        while (atmGui.newOption == 0) {
+            Timer timer = new Timer(1, null);
+            timer.setRepeats(false); // Stop after one execution
+            while (timer.isRunning()) {
+                // Keep the loop running while the timer is running
+            }
+            timer.start();
+            
+        }
+
+        if (atmGui.newOption == 1) {
+            atmGui.textBox.setText("Enter the amount you want to Deposit:\n");
+            atmGui.button2.setEnabled(true);
+            atmGui.enterButton.setEnabled(false);
+
+            // Making the new text field visible and the old one invisible
+            atmGui.newOptionTextField.setVisible(false);
+            atmGui.amountTextField.setVisible(true);
+            while (atmGui.enteredAmount == 0) {
+                Timer timer = new Timer(1, null);
+                timer.setRepeats(false); // Stop after one execution
+
+                timer.start();
+                while (timer.isRunning()) {
+                    // Keep the loop running while the timer is running
+                }
+            }
+            fixedAccount.deposit = atmGui.enteredAmount;
+            atmGui.enteredAmount = 0;
+            fixedAccount.deposit();
+
+        } else if (atmGui.newOption == 2) {
+            atmGui.button1.setEnabled(true);
+            atmGui.textBox.setText("Enter the amount you want to Withdraw:\n");
+            atmGui.optionTextField.setVisible(false);
+            atmGui.newOptionTextField.setVisible(false);
+            atmGui.amountTextField.setVisible(true);
+            atmGui.textBox.append("Current withdrawal Limit: Unlimited ");
+            atmGui.enteredAmount = 0;
+            while (atmGui.enteredAmount == 0) {
+                Timer timer = new Timer(1, null);
+                timer.setRepeats(false); // Stop after one execution
+
+                timer.start();
+                while (timer.isRunning()) {
+                    // Keep the loop running while the timer is running
+                    if (atmGui.enteredAmount > 0) {
+                        fixedAccount.withdraw = atmGui.enteredAmount;
+                        fixedAccount.withdraw();
+                        break;
+                    }
+                }
+            }
+
+            fixedAccount.withdraw = atmGui.enteredAmount;
+            fixedAccount.withdraw();
+        } else if (atmGui.newOption == 3) {
+            atmGui.textBox.setText("Fixed Account\n"
+                    + "Fixed Account Balance: " + (fixedAccount.bankBalance + fixedAccount.interest())
+                    + "\nInterest Rate: " + fixedAccount.interestRate + "%"
+                    + "\nInterest earned: " + fixedAccount.interest()
+                    + "\nPotential Interest: " + fixedAccount.potentialInterest()
+                    + "\nInterest calculated -> fixed contract -> Currently on 1 year plan"
+                    + "\n" + "\n"
+                    + "\n In 3sec <------ Back to main screen >");
+
+
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            
+        }
     }
 }

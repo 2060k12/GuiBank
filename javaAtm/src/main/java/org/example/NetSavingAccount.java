@@ -2,24 +2,29 @@ package org.example;
 
 import javax.swing.JOptionPane;
 
-public class ChequeAccount extends BankAccount {
+public class NetSavingAccount extends BankAccount {
+
 
     AtmGui atmGui = new AtmGui();
+    int withdrawalLimit = 100000; // this is the default withdrawal limit
+
+    // default constructor
+    private NetSavingAccount() {
+    }
+
+    float interestRate = 5; // 5 % interest rate
     float bankBalance = 0; // default is zero
+    int time = 1; // it is one month
     int deposit;
     int withdraw;
 
-    // default constructor
-    private ChequeAccount() {
-    }
-
-    public static ChequeAccount createChequeAccount() {
-        return new ChequeAccount();
+    public static NetSavingAccount createNetsavingAccount() {
+        return new NetSavingAccount();
     }
 
     @Override
     public float interest() {
-        return 0; // there is no interest in cheque account
+        return ((bankBalance * time * interestRate) / 100); // on monthly basis
     }
 
     @Override
@@ -28,6 +33,8 @@ public class ChequeAccount extends BankAccount {
             bankBalance = bankBalance + deposit;
             JOptionPane.showMessageDialog(null, deposit + " deposited successfully");
             JOptionPane.showMessageDialog(null, "Bank balance: " + bankBalance);
+        } else {
+            JOptionPane.showMessageDialog(null, "Deposit was unsuccessful");
         }
     }
 
@@ -42,7 +49,7 @@ public class ChequeAccount extends BankAccount {
         } catch (NotEnoughBalanceException exc) {
             JOptionPane.showMessageDialog(null, exc.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
-        if ((withdraw <= bankBalance)) {
+        if ((withdraw < bankBalance) && (withdraw < withdrawalLimit)) {
             if (withdraw == 0) {
                 System.out.println("wrong input");
             } else {
